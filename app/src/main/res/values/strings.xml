@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">SmartHomeVoice</string>
+    <string name="avatar_content_desc">User avatar</string>
+    <string name="tab_all_devices">All devices</string>
+    <string name="tab_living_room">Living room</string>
+    <string name="tab_kitchen">Kitchen</string>
+    <string name="fab_voice_desc">Voice recognition button</string>
+
+</resources>
