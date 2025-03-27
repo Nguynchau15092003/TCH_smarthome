@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Theme chính -->
     <style name="Theme.Smarthomevoice" parent="Theme.MaterialComponents.Light.NoActionBar">
-
+        <!-- Customize your theme here. -->
     </style>
+
+    <style name="Widget.MyCustomSwitch"
+        parent="@style/Widget.MaterialComponents.CompoundButton.Switch">
+
+        <!-- Bỏ hiển thị chữ ON/OFF -->
+        <item name="android:showText">false</item>
+
+        <!-- Override track & thumb bằng file drawable selector -->
+        <item name="android:track">@drawable/switch_track_selector</item>
+        <item name="android:thumb">@drawable/switch_thumb_selector</item>
+    </style>
+
+
 </resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Thumb khi Switch ON -->
+    <item
+        android:drawable="@drawable/switch_thumb_on"
+        android:state_checked="true" />
+    <!-- Thumb khi Switch OFF -->
+    <item
+        android:drawable="@drawable/switch_thumb_off" />
+</selector>

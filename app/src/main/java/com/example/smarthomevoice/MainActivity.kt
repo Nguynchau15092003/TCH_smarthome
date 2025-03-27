@@ -1,11 +1,10 @@
 package com.example.smarthomevoice
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.smarthomevoice.databinding.ActivityMainBinding
 import com.google.android.material.tabs.TabLayout
-import com.example.smarthomevoice.databinding.ActivityMainBinding // Import lớp binding
 
 class MainActivity : AppCompatActivity() {
 
@@ -14,41 +13,36 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Sử dụng View Binding
+        // Khởi tạo View Binding từ layout activity_main.xml
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Tạo danh sách thiết bị
+        // Tạo danh sách thiết bị (Device) với các thông tin mẫu
         val devices = listOf(
-            Device("Fan", R.drawable.ic_fan, "Đang bật"),
-            Device("Light", R.drawable.ic_light, "Đang tắt"),
-            Device("Curtain", R.drawable.ic_curtain, "Đang mở")
+            Device("Fan", R.drawable.ic_fan, true),
+            Device("Light", R.drawable.ic_light, false),
+            Device("Curtain", R.drawable.ic_curtain, true),
+            Device("Night Light", R.drawable.ic_night_light, false),
+            Device("Door", R.drawable.ic_door, false)
         )
 
-        // Khởi tạo Adapter
+        // Khởi tạo adapter và thiết lập RecyclerView (hiển thị theo dạng lưới 2 cột)
         deviceAdapter = DeviceAdapter(devices)
-
-        // Setup RecyclerView
         binding.recyclerViewDevices.layoutManager = GridLayoutManager(this, 2)
         binding.recyclerViewDevices.adapter = deviceAdapter
 
-        // TabLayout
+        // Thiết lập TabLayout (nếu bạn muốn lọc theo tab, hiện tại dùng chung danh sách)
         binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                when (tab?.position) {
-                    0 -> { /* All devices */ }
-                    1 -> { /* Living room */ }
-                    2 -> { /* Kitchen */ }
-                }
+                // TODO: Thêm logic lọc thiết bị theo tab nếu cần
             }
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
 
-        // FAB (mic)
+        // Xử lý sự kiện nhấn nút Voice (FloatingActionButton)
         binding.fabVoice.setOnClickListener {
-            Toast.makeText(this, "Voice recognition triggered", Toast.LENGTH_SHORT).show()
+            // TODO: Triển khai chức năng nhận dạng giọng nói
         }
     }
 }

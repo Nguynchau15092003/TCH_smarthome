@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <!-- Kích thước thumb, nhỏ hơn track -->
+    <size
+        android:width="26dp"
+        android:height="26dp" />
+
+    <!-- Màu trắng khi ON -->
+    <solid android:color="@android:color/white" />
+</shape>
