@@ -39,6 +39,22 @@ android {
         compose = true
         viewBinding = true
     }
+    packaging {
+        resources {
+            excludes += setOf(
+                "META-INF/INDEX.LIST",
+                "META-INF/DEPENDENCIES",
+                "META-INF/LICENSE",
+                "META-INF/LICENSE.txt",
+                "META-INF/license.txt",
+                "META-INF/NOTICE",
+                "META-INF/NOTICE.txt",
+                "META-INF/notice.txt",
+                "META-INF/ASL2.0",
+                "META-INF/*.kotlin_module"
+            )
+        }
+    }
 }
 
 dependencies {
@@ -67,4 +83,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation("com.google.cloud:google-cloud-dialogflow:2.1.0")
+    implementation("io.grpc:grpc-okhttp:1.30.0")
+    implementation("androidx.activity:activity-ktx:1.8.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
 }

@@ -19,6 +19,11 @@ class DeviceAdapter(
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
     private val TAG = "DeviceAdapter"
 
+    fun getDevices(): List<Device> {
+        return devices
+    }
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeviceViewHolder {
         val binding = ItemDeviceBinding.inflate(
             LayoutInflater.from(parent.context),
