@@ -19,9 +19,9 @@ class MainActivity : AppCompatActivity() {
 
         // Tạo danh sách thiết bị (Device) với các thông tin mẫu
         val devices = listOf(
-            Device("Fan", R.drawable.ic_fan, true),
+            Device("Fan", R.drawable.ic_fan, false),
             Device("Light", R.drawable.ic_light, false),
-            Device("Curtain", R.drawable.ic_curtain, true),
+            Device("Curtain", R.drawable.ic_curtain, false),
             Device("Night Light", R.drawable.ic_night_light, false),
             Device("Door", R.drawable.ic_door, false)
         )
