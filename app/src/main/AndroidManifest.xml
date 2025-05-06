@@ -17,14 +17,31 @@
         android:theme="@style/Theme.Smarthomevoice"
         tools:targetApi="31">
 
+        <!-- Đặt OnboardingActivity làm launcher -->
         <activity
-            android:name=".MainActivity"
+            android:name=".OnboardingActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Xóa LoginActivity vì không dùng nữa -->
+        <!-- <activity
+            android:name=".LoginActivity"
+            android:exported="true" /> -->
+
+        <!-- MainActivity: Màn hình chính sau Onboarding -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Smarthomevoice" />
+
+        <!-- TakeNoteActivity: mở từ chức năng Take Note -->
+        <activity
+            android:name=".TakeNoteFragment"
+            android:exported="true" />
 
     </application>
 

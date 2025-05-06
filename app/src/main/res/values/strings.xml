@@ -1,16 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- App Information -->
     <string name="app_name">SmartHomeVoice</string>
     <string name="avatar_content_desc">User avatar</string>
+
+    <!-- Tab Titles -->
     <string name="tab_all_devices">All devices</string>
     <string name="tab_living_room">Living room</string>
     <string name="tab_kitchen">Kitchen</string>
+
+    <!-- Floating Action Button -->
     <string name="fab_voice_desc">Voice recognition button</string>
+
+    <!-- Device Related -->
     <string name="device_icon_desc">Device icon</string>
     <string name="device_name_placeholder">Device Name</string>
 
+    <!-- Login Screen -->
     <string name="login_title">Login</string>
     <string name="login_hint_email">Your email</string>
     <string name="login_hint_password">Your password</string>
     <string name="login_button">Log In</string>
 
+    <!-- Select Room -->
+    <string name="select_room_title">Select Room</string>
+    <string-array name="room_options">
+        <item>All Rooms</item>
+        <item>Living Room</item>
+        <item>Kitchen</item>
+        <item>Bedroom</item>
+    </string-array>
+
+    <!-- Miscellaneous -->
+    <string name="remote_command">Remote</string>
+    <string name="note_command">Note</string>
+    <string name="voice_command_desc">Voice Command</string>
+    <string name="onboarding_image_desc">Onboarding image</string>
+    <!-- Chuỗi cho màn hình Take Note -->
+    <string name="take_note_title">Take a Note</string>
+    <string name="note_hint_title">Note title</string>
+    <string name="note_hint_description">Note description</string>
+    <string name="btn_save_note">Save to Google Calendar</string>
 </resources>

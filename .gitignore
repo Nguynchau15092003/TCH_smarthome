@@ -15,5 +15,4 @@
 local.properties
 
 # Ignore Dialogflow credentials
-app/src/main/assets/iot-voice-control-smart-home-59d57044ca23.json
-app/src/main/assets/iotvoicecontrol-jjnx-d82e7254e31b.json
+app/src/main/assets/iotvoicecontrol-jjnx-e00f95d55734.json

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp"
+    android:background="@android:color/white">
+
+    <!-- Hình ảnh minh họa -->
+    <ImageView
+        android:id="@+id/imageOnboarding"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:src="@drawable/onboarding1"
+        android:contentDescription="@string/onboarding_image_desc" />
+
+    <!-- Tiêu đề Onboarding -->
+    <TextView
+        android:id="@+id/titleOnboarding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Welcome to SmartHomeVoice"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/inter"
+        android:layout_marginTop="24dp" />
+
+    <!-- Mô tả Onboarding -->
+    <TextView
+        android:id="@+id/descriptionOnboarding"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Manage all your smart devices easily and efficiently."
+        android:textSize="16sp"
+        android:layout_marginTop="12dp"
+        android:textAlignment="center" />
+
+</LinearLayout>

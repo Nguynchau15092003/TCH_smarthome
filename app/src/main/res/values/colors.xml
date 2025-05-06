@@ -7,8 +7,9 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="green_on">#00C853</color>   <!-- Xanh lá, tuỳ ý -->
-    <color name="gray_off">#E0E0E0</color>  <!-- Xám nhạt -->
+    <color name="green_on">#00C853</color>
+    <color name="gray_off">#E0E0E0</color>
     <color name="device_card_gray">#F5F5F5</color>
+    <color name="teal_701">#018786</color>
 
 </resources>

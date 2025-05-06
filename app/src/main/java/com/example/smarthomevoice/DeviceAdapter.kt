@@ -72,13 +72,13 @@ class DeviceAdapter(
                         result?.let {
                             it.onSuccess { response ->
                                 Log.d(TAG, "Success: ${device.name} command sent successfully")
-                                Toast.makeText(binding.root.context, 
-                                    "${device.name} ${if (isChecked) "turned on" else "turned off"}", 
+                                Toast.makeText(binding.root.context,
+                                    "${device.name} ${if (isChecked) "turned on" else "turned off"}",
                                     Toast.LENGTH_SHORT).show()
                             }.onFailure { error ->
                                 Log.e(TAG, "Error controlling ${device.name}: ${error.message}")
-                                Toast.makeText(binding.root.context, 
-                                    "Error controlling ${device.name}: ${error.message}", 
+                                Toast.makeText(binding.root.context,
+                                    "Error controlling ${device.name}: ${error.message}",
                                     Toast.LENGTH_SHORT).show()
                                 // Revert the switch state on error
                                 binding.switchToggle.isChecked = !isChecked
@@ -87,8 +87,8 @@ class DeviceAdapter(
                         }
                     } catch (e: Exception) {
                         Log.e(TAG, "Exception while controlling ${device.name}: ${e.message}")
-                        Toast.makeText(binding.root.context, 
-                            "Error: ${e.message}", 
+                        Toast.makeText(binding.root.context,
+                            "Error: ${e.message}",
                             Toast.LENGTH_SHORT).show()
                         // Revert the switch state on error
                         binding.switchToggle.isChecked = !isChecked
