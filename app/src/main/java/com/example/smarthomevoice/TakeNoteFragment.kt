@@ -2,22 +2,35 @@ package com.example.smarthomevoice
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.Intent
 import android.os.Bundle
-import android.provider.CalendarContract
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.smarthomevoice.databinding.ActivityTakeNoteBinding
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+import com.google.api.client.googleapis.json.GoogleJsonResponseException
+import com.google.api.client.http.javanet.NetHttpTransport
+import com.google.api.client.json.gson.GsonFactory
+import com.google.api.client.util.DateTime
+import com.google.api.services.tasks.TasksScopes
+import com.google.api.services.tasks.model.Task
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class TakeNoteFragment : Fragment() {
 
+    private val TAG = "TakeNoteFragment"
     private var _binding: ActivityTakeNoteBinding? = null
     private val binding get() = _binding!!
     private var selectedDateTime: Calendar? = null
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,14 +43,19 @@ class TakeNoteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Chọn ngày giờ
+        // Update button text to match functionality
+        binding.btnSaveNote.text = "SAVE TO GOOGLE TASKS"
+
+        // Select date and time
         binding.tvSelectedDateTime.setOnClickListener {
             showDateTimePicker()
         }
 
-        // Lưu ghi chú vào lịch
+        // Save note to tasks
         binding.btnSaveNote.setOnClickListener {
-            saveNoteToCalendar()
+            coroutineScope.launch {
+                saveNoteToGoogleTasks()
+            }
         }
     }
 
@@ -74,10 +92,11 @@ class TakeNoteFragment : Fragment() {
         }, year, month, day).show()
     }
 
-    private fun saveNoteToCalendar() {
+    private suspend fun saveNoteToGoogleTasks() {
         val noteTitle = binding.etNoteTitle.text.toString().trim()
         val noteDescription = binding.etNoteDescription.text.toString().trim()
 
+        // Validate inputs
         if (noteTitle.isEmpty() || noteDescription.isEmpty()) {
             Toast.makeText(requireContext(), "Please enter both title and description", Toast.LENGTH_SHORT).show()
             return
@@ -88,21 +107,80 @@ class TakeNoteFragment : Fragment() {
             return
         }
 
-        val beginTime = selectedDateTime!!.timeInMillis
-        val endTime = beginTime + 60 * 60 * 1000
+        withContext(Dispatchers.IO) {
+            try {
+                // Get the user account
+                val account = GoogleSignIn.getLastSignedInAccount(requireContext())
+                if (account == null) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(requireContext(), "Please sign in with your Google account", Toast.LENGTH_SHORT).show()
+                    }
+                    return@withContext
+                }
 
-        val intent = Intent(Intent.ACTION_INSERT).apply {
-            data = CalendarContract.Events.CONTENT_URI
-            putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime)
-            putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime)
-            putExtra(CalendarContract.Events.TITLE, noteTitle)
-            putExtra(CalendarContract.Events.DESCRIPTION, noteDescription)
-        }
+                // Create credential for Tasks API
+                val credential = GoogleAccountCredential.usingOAuth2(
+                    requireContext(), listOf(TasksScopes.TASKS)
+                ).apply {
+                    selectedAccount = account.account
+                }
 
-        if (intent.resolveActivity(requireContext().packageManager) != null) {
-            startActivity(intent)
-        } else {
-            Toast.makeText(requireContext(), "No calendar app found.", Toast.LENGTH_SHORT).show()
+                // Build Tasks service
+                val tasksService = com.google.api.services.tasks.Tasks.Builder(
+                    NetHttpTransport(),
+                    GsonFactory.getDefaultInstance(),
+                    credential
+                ).setApplicationName("SmartHomeVoice").build()
+
+                // Get default task list
+                val taskLists = tasksService.tasklists().list().execute()
+                val defaultTaskList = taskLists.items.find { it.title == "@default" }
+                    ?: taskLists.items.firstOrNull()
+                    ?: throw Exception("No task lists found")
+
+                Log.d(TAG, "Using task list: ${defaultTaskList.title} (${defaultTaskList.id})")
+
+                // Format the date for the task
+                val dueDate = DateTime(selectedDateTime!!.time).toStringRfc3339()
+
+                // Create a task
+                val task = Task()
+                    .setTitle(noteTitle)
+                    .setNotes(noteDescription)
+                    .setDue(dueDate)
+                    .setStatus("needsAction")
+
+                // Insert the task into the default task list
+                val createdTask = tasksService.tasks()
+                    .insert(defaultTaskList.id, task)
+                    .execute()
+
+                Log.d(TAG, "Task created successfully: ${createdTask.id}")
+
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Task created successfully!", Toast.LENGTH_SHORT).show()
+                    // Clear inputs after successful creation
+                    binding.etNoteTitle.text.clear()
+                    binding.etNoteDescription.text.clear()
+                    binding.tvSelectedDateTime.text = "Select Date and Time"
+                    selectedDateTime = null
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error creating task", e)
+                val errorMessage = when (e) {
+                    is GoogleJsonResponseException -> {
+                        when (e.statusCode) {
+                            403 -> "Tasks API is not enabled. Please enable it in Google Cloud Console."
+                            401 -> "Authentication failed. Please sign in again."
+                            else -> "Failed to create task: ${e.message}"
+                        }
+                    }
+                    else -> "Failed to create task: ${e.message}"
+                }
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show()
+                }
+            }
         }
     }
 

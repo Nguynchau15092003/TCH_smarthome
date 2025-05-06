@@ -27,10 +27,10 @@
             </intent-filter>
         </activity>
 
-        <!-- Xóa LoginActivity vì không dùng nữa -->
-        <!-- <activity
+        <!-- LoginActivity -->
+        <activity
             android:name=".LoginActivity"
-            android:exported="true" /> -->
+            android:exported="true" />
 
         <!-- MainActivity: Màn hình chính sau Onboarding -->
         <activity

@@ -66,19 +66,62 @@
                 android:maxWidth="320dp"
                 android:layout_marginBottom="24dp" />
 
-            <!-- Nút Login -->
+            <!-- Nút Login thông thường -->
             <Button
                 android:id="@+id/btnLogin"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:text="@string/login_button"
                 android:textSize="16sp"
                 android:textColor="@android:color/white"
                 android:background="@drawable/btn_login_background"
                 android:fontFamily="@font/inter"
-                android:paddingHorizontal="32dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="8dp"
                 android:layout_gravity="center_horizontal" />
+
+            <!-- Divider với text "hoặc" -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginVertical="16dp">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="#DDDDDD"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="hoặc"
+                    android:paddingHorizontal="16dp"
+                    android:textSize="14sp"
+                    android:textColor="#757575"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="#DDDDDD"/>
+            </LinearLayout>
+
+            <!-- Nút Login với Google -->
+            <Button
+                android:id="@+id/btnSignInWithGoogle"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Đăng nhập với Google"
+                android:textSize="16sp"
+                android:textColor="#5F6368"
+                android:fontFamily="@font/inter"
+                android:background="@drawable/btn_google_signin_background"
+                android:drawableStart="@drawable/ic_google"
+                android:paddingStart="16dp"
+                android:paddingEnd="24dp"
+                android:drawablePadding="8dp" />
 
         </LinearLayout>
 

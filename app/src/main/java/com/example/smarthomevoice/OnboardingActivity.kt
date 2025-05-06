@@ -42,9 +42,9 @@ class OnboardingActivity : AppCompatActivity() {
             }
         })
 
-        // Nút "Get Started" chuyển sang MainActivity
+        // Nút "Get Started" chuyển sang LoginActivity
         binding.btnGetStarted.setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
+            startActivity(Intent(this, LoginActivity::class.java))
             finish() // Đảm bảo không quay lại OnboardingActivity
         }
 
