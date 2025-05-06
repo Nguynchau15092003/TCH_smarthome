@@ -14,7 +14,7 @@ class DialogflowService(context: Context) {
 
     init {
         // ✅ Load JSON file from assets folder
-        val stream: InputStream = context.assets.open("iotvoicecontrol-jjnx-d82e7254e31b.json")
+        val stream: InputStream = context.assets.open("iotvoicecontrol-jjnx-e00f95d55734.json")
         val credentials = GoogleCredentials.fromStream(stream)
             .createScoped(listOf("https://www.googleapis.com/auth/cloud-platform"))
 
