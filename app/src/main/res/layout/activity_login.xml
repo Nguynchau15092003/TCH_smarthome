@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity"
+    android:padding="24dp">
+
+    <!-- CardView chứa giao diện Login được căn giữa cả theo chiều ngang lẫn dọc -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewLogin"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        android:layout_margin="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- Nội dung giao diện Login -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:gravity="center_horizontal">
+
+            <!-- Tiêu đề Login -->
+            <TextView
+                android:id="@+id/tvLoginTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/login_title"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/inter"
+                android:layout_marginBottom="24dp" />
+
+            <!-- EditText nhập Email -->
+            <EditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/login_hint_email"
+                android:inputType="textEmailAddress"
+                android:autofillHints="emailAddress"
+                android:minHeight="48dp"
+                android:textSize="16sp"
+                android:maxWidth="320dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- EditText nhập Password -->
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/login_hint_password"
+                android:inputType="textPassword"
+                android:autofillHints="password"
+                android:minHeight="48dp"
+                android:textSize="16sp"
+                android:maxWidth="320dp"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Nút Login thông thường -->
+            <Button
+                android:id="@+id/btnLogin"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="@string/login_button"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:background="@drawable/btn_login_background"
+                android:fontFamily="@font/inter"
+                android:layout_marginTop="8dp"
+                android:layout_gravity="center_horizontal" />
+
+            <!-- Divider với text "hoặc" -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginVertical="16dp">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="#DDDDDD"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="hoặc"
+                    android:paddingHorizontal="16dp"
+                    android:textSize="14sp"
+                    android:textColor="#757575"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1"
+                    android:background="#DDDDDD"/>
+            </LinearLayout>
+
+            <!-- Nút Login với Google -->
+            <Button
+                android:id="@+id/btnSignInWithGoogle"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Đăng nhập với Google"
+                android:textSize="16sp"
+                android:textColor="#5F6368"
+                android:fontFamily="@font/inter"
+                android:background="@drawable/btn_google_signin_background"
+                android:drawableStart="@drawable/ic_google"
+                android:paddingStart="16dp"
+                android:paddingEnd="24dp"
+                android:drawablePadding="8dp" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
     <!-- AppBarLayout chứa MaterialToolbar -->
@@ -12,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
-        app:elevation="0dp"> <!-- Tắt bóng cho AppBarLayout -->
+        android:fitsSystemWindows="true"
+        app:elevation="0dp">
 
         <!-- MaterialToolbar làm top app bar -->
         <com.google.android.material.appbar.MaterialToolbar
@@ -23,16 +25,28 @@
             android:title="TCH app"
             app:titleTextColor="@android:color/black"
             app:navigationIcon="@drawable/ic_logout"
-            app:elevation="0dp" /> <!-- Tắt bóng cho Toolbar -->
+            app:elevation="0dp" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- Nơi chứa các Fragment (RemoteFragment, TakeNoteFragment, ...) -->
+    <!-- Fragment Container -->
     <FrameLayout
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize" /> <!-- Dùng attr cho đúng kích thước AppBar -->
+        android:layout_marginTop="?attr/actionBarSize" />
+
+    <!-- Voice Command FAB -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabVoice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="88dp"
+        android:contentDescription="@string/voice_command_desc"
+        android:src="@drawable/ic_voice"
+        app:fabSize="normal" />
 
     <!-- Bottom Navigation View -->
     <com.google.android.material.bottomnavigation.BottomNavigationView

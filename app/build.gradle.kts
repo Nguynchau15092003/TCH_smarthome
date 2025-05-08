@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.gms.google.services)
 
 }
 
@@ -75,7 +76,11 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
-    
+    implementation(libs.firebase.auth)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -89,4 +94,24 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.8.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+
+    // Firebase BoM for automatic version alignment
+    implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+    implementation("com.google.firebase:firebase-auth-ktx")
+
+    // Google Sign-In
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+
+    // Google API Client Libraries
+    implementation("com.google.api-client:google-api-client-android:2.2.0")
+    implementation("com.google.api-client:google-api-client:2.2.0")
+    implementation("com.google.http-client:google-http-client-gson:1.43.3")
+    implementation("com.google.apis:google-api-services-calendar:v3-rev20231123-2.0.0")
+    implementation("com.google.apis:google-api-services-tasks:v1-rev20210709-2.0.0")
+    implementation("com.google.oauth-client:google-oauth-client-jetty:1.34.1")
+    implementation("com.google.http-client:google-http-client:1.43.3")
+
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
 }
