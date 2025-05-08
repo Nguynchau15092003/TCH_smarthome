@@ -37,8 +37,13 @@
     <string name="voice_command_desc">Voice Command</string>
     <string name="onboarding_image_desc">Onboarding image</string>
     <!-- Chuỗi cho màn hình Take Note -->
-    <string name="take_note_title">Take a Note</string>
-    <string name="note_hint_title">Note title</string>
-    <string name="note_hint_description">Note description</string>
-    <string name="btn_save_note">Save to Google Calendar</string>
+
+    <string name="hint_event_title">Event Title</string>
+    <string name="hint_event_description">Event Description</string>
+    <string name="select_datetime">Select date and time</string>
+    <string name="save_event">Save Event</string>
+
+    <string name="hint_task_title">Task Title</string>
+    <string name="hint_task_notes">Task Notes</string>
+    <string name="save_task">Save Task</string>
 </resources>

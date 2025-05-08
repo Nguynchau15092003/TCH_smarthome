@@ -11,5 +11,6 @@
     <color name="gray_off">#E0E0E0</color>
     <color name="device_card_gray">#F5F5F5</color>
     <color name="teal_701">#018786</color>
-
+    <color name="pastel_green">#A8D5BA</color>
+    <color name="pastel_pink">#FADADD</color>
 </resources>

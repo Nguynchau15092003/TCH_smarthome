@@ -13,28 +13,43 @@
         android:id="@+id/imageOnboarding"
         android:layout_width="250dp"
         android:layout_height="250dp"
+        android:scaleType="centerInside"
+        android:layout_gravity="center"
         android:src="@drawable/onboarding1"
         android:contentDescription="@string/onboarding_image_desc" />
 
-    <!-- Tiêu đề Onboarding -->
-    <TextView
-        android:id="@+id/titleOnboarding"
-        android:layout_width="wrap_content"
+    <!-- LinearLayout con để chứa tiêu đề và mô tả, căn lề trái -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Welcome to SmartHomeVoice"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:fontFamily="@font/inter"
-        android:layout_marginTop="24dp" />
+        android:orientation="vertical"
+        android:layout_marginTop="24dp">
 
-    <!-- Mô tả Onboarding -->
-    <TextView
-        android:id="@+id/descriptionOnboarding"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Manage all your smart devices easily and efficiently."
-        android:textSize="16sp"
-        android:layout_marginTop="12dp"
-        android:textAlignment="center" />
+        <!-- Tiêu đề Onboarding -->
+        <TextView
+            android:id="@+id/titleOnboarding"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Control all devices"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:fontFamily="@font/inter"
+            android:layout_gravity="start"
+            android:gravity="start" />
+
+        <!-- Mô tả Onboarding -->
+        <TextView
+            android:id="@+id/descriptionOnboarding"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Easily access and manage the smart devices in your home."
+            android:textSize="16sp"
+            android:textColor="#777777"
+            android:layout_marginTop="12dp"
+            android:layout_gravity="start"
+            android:gravity="start" />
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -8,7 +8,6 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
-import com.example.smarthomevoice.LoginActivity
 import com.example.smarthomevoice.R
 import com.example.smarthomevoice.databinding.ActivityOnboardingBinding
 
@@ -17,9 +16,9 @@ class OnboardingActivity : AppCompatActivity() {
     private lateinit var binding: ActivityOnboardingBinding
 
     private val onboardingItems = listOf(
-        OnboardingItem(R.drawable.onboarding1, "Control All Devices", "Manage your smart devices effortlessly."),
-        OnboardingItem(R.drawable.onboarding2, "Smart Automation", "Automate your home with advanced AI features."),
-        OnboardingItem(R.drawable.onboarding3, "Easy Operation", "Control your devices with a single tap.")
+        OnboardingItem(R.drawable.onboarding1, "Control\nall devices", "Easily access and manage the smart devices in your home."),
+        OnboardingItem(R.drawable.onboarding2, "Integrated\nhigh technology", "With AI support and data analysis capabilities, you can easily set up automation."),
+        OnboardingItem(R.drawable.onboarding3, "Easy one-touch \noperation", "Interact with smart devices with just a single tap.")
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,21 +32,19 @@ class OnboardingActivity : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 addDotsIndicator(position)
-                // Hiển thị nút "Get Started" nếu trang cuối
                 if (position == onboardingItems.lastIndex) {
                     binding.btnGetStarted.visibility = View.VISIBLE
+                    binding.btnGetStarted.text = "Continue with Email"
                 } else {
                     binding.btnGetStarted.visibility = View.GONE
                 }
             }
         })
 
-        // Nút "Get Started" chuyển sang MainActivity
         binding.btnGetStarted.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
-            finish() // Đảm bảo không quay lại OnboardingActivity
+            finish()
         }
-
     }
 
     private fun addDotsIndicator(currentPosition: Int) {
