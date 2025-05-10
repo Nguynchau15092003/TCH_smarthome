@@ -2,6 +2,7 @@ package com.example.smarthomevoice
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
@@ -54,9 +55,29 @@ class LoginActivity : ComponentActivity() {
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
+        // Set up regular login button
+        binding.btnLogin.setOnClickListener {
+            val email = binding.etEmail.text.toString().trim()
+            val password = binding.etPassword.text.toString().trim()
+
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Sign in with email and password
+            loginWithEmailPassword(email, password)
+        }
+
         // Set up Google Sign-In button
-        binding.btnSignInWithGoogle.setOnClickListener {
+        (binding.btnSignInWithGoogle as Button).setOnClickListener {
             signIn()
+        }
+
+        // Set up Forgot Password text
+        binding.tvForgotPassword.setOnClickListener {
+            // Navigate to forgot password activity or show dialog
+            Toast.makeText(this, "Forgot password feature coming soon", Toast.LENGTH_SHORT).show()
         }
 
         // Set up the ActivityResultLauncher
@@ -69,6 +90,21 @@ class LoginActivity : ComponentActivity() {
                 Toast.makeText(this, "Google sign in failed: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun loginWithEmailPassword(email: String, password: String) {
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success
+                    startActivity(Intent(this, MainActivity::class.java))
+                    finish()
+                } else {
+                    // If sign in fails, display a message to the user
+                    Toast.makeText(this, "Authentication failed: ${task.exception?.message}",
+                        Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 
     private fun signIn() {

@@ -2,7 +2,6 @@ package com.example.smarthomevoice
 
 import android.app.Activity
 import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -55,12 +54,10 @@ class CreateTaskFragment : Fragment() {
         )
         binding.cardTask.radius = 24f
 
-        // Update button text
         binding.btnSaveTask.text = "SAVE TO GOOGLE TASKS"
 
-        // Date and time picker
         binding.etTaskDate.setOnClickListener {
-            showDateTimePicker()
+            showDatePicker()
         }
 
         binding.btnSaveTask.setOnClickListener {
@@ -70,25 +67,18 @@ class CreateTaskFragment : Fragment() {
         }
     }
 
-    private fun showDateTimePicker() {
+    private fun showDatePicker() {
         val datePicker = DatePickerDialog(
             requireContext(),
             { _, year, month, dayOfMonth ->
                 calendar.set(year, month, dayOfMonth)
+                calendar.set(Calendar.HOUR_OF_DAY, 0)
+                calendar.set(Calendar.MINUTE, 0)
+                calendar.set(Calendar.SECOND, 0)
+                calendar.set(Calendar.MILLISECOND, 0)
 
-                // After selecting date, show time picker
-                val hour = calendar.get(Calendar.HOUR_OF_DAY)
-                val minute = calendar.get(Calendar.MINUTE)
-
-                TimePickerDialog(requireContext(), { _, h, min ->
-                    calendar.set(Calendar.HOUR_OF_DAY, h)
-                    calendar.set(Calendar.MINUTE, min)
-                    calendar.set(Calendar.SECOND, 0)
-
-                    selectedDateTime = calendar.clone() as Calendar
-                    updateDateTimeField()
-
-                }, hour, minute, true).show()
+                selectedDateTime = calendar.clone() as Calendar
+                updateDateField()
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -97,8 +87,8 @@ class CreateTaskFragment : Fragment() {
         datePicker.show()
     }
 
-    private fun updateDateTimeField() {
-        val format = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+    private fun updateDateField() {
+        val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         binding.etTaskDate.setText(format.format(calendar.time))
     }
 
@@ -114,13 +104,12 @@ class CreateTaskFragment : Fragment() {
         }
 
         if (selectedDateTime == null) {
-            Toast.makeText(requireContext(), "Please select a date and time", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Please select a date", Toast.LENGTH_SHORT).show()
             return
         }
 
         withContext(Dispatchers.IO) {
             try {
-                // Get the user account
                 val account = GoogleSignIn.getLastSignedInAccount(requireContext())
                 if (account == null) {
                     withContext(Dispatchers.Main) {
@@ -129,14 +118,12 @@ class CreateTaskFragment : Fragment() {
                     return@withContext
                 }
 
-                // Create credential for Tasks API
                 val credential = GoogleAccountCredential.usingOAuth2(
                     requireContext(), listOf(TasksScopes.TASKS)
                 ).apply {
                     selectedAccount = account.account
                 }
 
-                // Build Tasks service
                 val tasksService = com.google.api.services.tasks.Tasks.Builder(
                     NetHttpTransport(),
                     GsonFactory.getDefaultInstance(),
@@ -144,7 +131,6 @@ class CreateTaskFragment : Fragment() {
                 ).setApplicationName("SmartHomeVoice").build()
 
                 try {
-                    // Get default task list
                     val taskLists = tasksService.tasklists().list().execute()
                     val defaultTaskList = taskLists.items.find { it.title == "@default" }
                         ?: taskLists.items.firstOrNull()
@@ -152,17 +138,14 @@ class CreateTaskFragment : Fragment() {
 
                     Log.d(TAG, "Using task list: ${defaultTaskList.title} (${defaultTaskList.id})")
 
-                    // Format the date for the task
                     val dueDate = DateTime(selectedDateTime!!.time).toStringRfc3339()
 
-                    // Create a task
                     val task = Task()
                         .setTitle(title)
                         .setNotes(notes)
                         .setDue(dueDate)
                         .setStatus(if (completed) "completed" else "needsAction")
 
-                    // Insert the task into the default task list
                     val createdTask = tasksService.tasks()
                         .insert(defaultTaskList.id, task)
                         .execute()
@@ -171,14 +154,11 @@ class CreateTaskFragment : Fragment() {
 
                     withContext(Dispatchers.Main) {
                         Toast.makeText(requireContext(), "Task created successfully!", Toast.LENGTH_SHORT).show()
-                        // Clear inputs after successful creation
                         clearInputs()
                     }
                 } catch (e: com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException) {
-                    // This exception occurs when the user needs to grant permissions
                     Log.d(TAG, "Need to request permissions: ${e.message}")
                     withContext(Dispatchers.Main) {
-                        // Start the authorization intent
                         startActivityForResult(e.intent, REQUEST_AUTHORIZATION)
                     }
                 }
@@ -193,7 +173,6 @@ class CreateTaskFragment : Fragment() {
                         }
                     }
                     is com.google.android.gms.auth.UserRecoverableAuthException -> {
-                        // Handle UserRecoverableAuthException
                         withContext(Dispatchers.Main) {
                             startActivityForResult(e.intent, REQUEST_AUTHORIZATION)
                         }
@@ -219,24 +198,18 @@ class CreateTaskFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        when (requestCode) {
-            REQUEST_AUTHORIZATION -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    // User granted permission, retry operation
-                    Log.d(TAG, "User granted tasks permissions, retrying operation")
-                    coroutineScope.launch {
-                        saveTaskToGoogleTasks()
-                    }
-                } else {
-                    // User denied permission
-                    Log.d(TAG, "User denied tasks permissions")
-                    Toast.makeText(
-                        requireContext(),
-                        "Google Tasks permissions are required to create tasks",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
+        if (requestCode == REQUEST_AUTHORIZATION && resultCode == Activity.RESULT_OK) {
+            Log.d(TAG, "User granted tasks permissions, retrying operation")
+            coroutineScope.launch {
+                saveTaskToGoogleTasks()
             }
+        } else if (requestCode == REQUEST_AUTHORIZATION) {
+            Log.d(TAG, "User denied tasks permissions")
+            Toast.makeText(
+                requireContext(),
+                "Google Tasks permissions are required to create tasks",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 

@@ -19,9 +19,9 @@ class OnboardingActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
 
     private val onboardingItems = listOf(
-        OnboardingItem(R.drawable.onboarding1, "Control All Devices", "Manage your smart devices effortlessly."),
-        OnboardingItem(R.drawable.onboarding2, "Smart Automation", "Automate your home with advanced AI features."),
-        OnboardingItem(R.drawable.onboarding3, "Easy Operation", "Control your devices with a single tap.")
+        OnboardingItem(R.drawable.onboarding1, "Control \nall devices", "Easily access and manage the smart devices in your home."),
+        OnboardingItem(R.drawable.onboarding2, "Integrated \nhigh technology", "With AI support and data analysis capabilities, you can easily set up automation."),
+        OnboardingItem(R.drawable.onboarding3, "Easy one-touch \noperation", "Interact with smart devices with just a single tap.")
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,12 +46,8 @@ class OnboardingActivity : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 addDotsIndicator(position)
-                // Show "Get Started" button on last page
-                if (position == onboardingItems.lastIndex) {
-                    binding.btnGetStarted.visibility = View.VISIBLE
-                } else {
-                    binding.btnGetStarted.visibility = View.GONE
-                }
+                // Always show "Get Started" button
+                binding.btnGetStarted.visibility = View.VISIBLE
             }
         })
 
