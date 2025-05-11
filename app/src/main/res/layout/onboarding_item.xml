@@ -8,13 +8,10 @@
     android:padding="24dp"
     android:background="@drawable/onboarding_gradient_background">
 
-    <!-- Hình ảnh minh họa -->
-
-    <!-- LinearLayout con để chứa tiêu đề và mô tả, căn lề trái -->
     <ImageView
         android:id="@+id/imageOnboarding"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="293dp"
+        android:layout_height="325dp"
         android:layout_gravity="center"
         android:contentDescription="@string/onboarding_image_desc"
         android:scaleType="centerInside"
@@ -24,36 +21,32 @@
         android:id="@+id/textContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="24dp">
+        android:layout_marginTop="24dp"
+        android:orientation="vertical">
 
-        <!-- Tiêu đề Onboarding -->
+        <TextView
+            android:id="@+id/titleOnboarding"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:fontFamily="@font/inter"
+            android:gravity="start"
+            android:text="Control all devices"
+            android:textColor="#333333"
+            android:textSize="28sp"
+            android:textStyle="bold" />
 
-        <!-- Mô tả Onboarding -->
+        <TextView
+            android:id="@+id/descriptionOnboarding"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginTop="12dp"
+            android:gravity="start"
+            android:text="Easily access and manage the smart devices in your home."
+            android:textColor="#777777"
+            android:textSize="16sp" />
 
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/titleOnboarding"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:fontFamily="@font/inter"
-        android:gravity="start"
-        android:text="Control all devices"
-        android:textColor="#333333"
-        android:textSize="28sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/descriptionOnboarding"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:layout_marginTop="12dp"
-        android:gravity="start"
-        android:text="Easily access and manage the smart devices in your home."
-        android:textColor="#777777"
-        android:textSize="16sp" />
 
 </LinearLayout>

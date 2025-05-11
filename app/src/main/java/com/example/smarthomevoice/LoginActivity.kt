@@ -2,7 +2,6 @@ package com.example.smarthomevoice
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
@@ -70,7 +69,7 @@ class LoginActivity : ComponentActivity() {
         }
 
         // Set up Google Sign-In button
-        (binding.btnSignInWithGoogle as Button).setOnClickListener {
+        binding.btnSignInWithGoogle.setOnClickListener {
             signIn()
         }
 
@@ -78,6 +77,12 @@ class LoginActivity : ComponentActivity() {
         binding.tvForgotPassword.setOnClickListener {
             // Navigate to forgot password activity or show dialog
             Toast.makeText(this, "Forgot password feature coming soon", Toast.LENGTH_SHORT).show()
+        }
+
+        // Set up Sign Up text
+        binding.tvSignUp.setOnClickListener {
+            // Chuyển hướng đến màn hình đăng ký
+            startActivity(Intent(this, RegisterActivity::class.java))
         }
 
         // Set up the ActivityResultLauncher

@@ -58,18 +58,20 @@
             app:boxCornerRadiusTopStart="8dp"
             app:boxCornerRadiusTopEnd="8dp"
             app:boxCornerRadiusBottomStart="8dp"
-            app:boxCornerRadiusBottomEnd="8dp">
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintTextColor="#595555"
+            android:textColorHint="#595555">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:autofillHints="emailAddress"
+                android:background="@null"
                 android:hint="enter your email"
                 android:inputType="textEmailAddress"
-                android:autofillHints="emailAddress"
                 android:minHeight="56dp"
-                android:textSize="16sp"
-                android:background="@null" />
+                android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -85,13 +87,15 @@
             app:boxCornerRadiusTopStart="8dp"
             app:boxCornerRadiusTopEnd="8dp"
             app:boxCornerRadiusBottomStart="8dp"
-            app:boxCornerRadiusBottomEnd="8dp">
+            app:boxCornerRadiusBottomEnd="8dp"
+            app:hintTextColor="#595555"
+            android:textColorHint="#595555">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="••••••"
+                android:hint="enter your password"
                 android:inputType="textPassword"
                 android:autofillHints="password"
                 android:minHeight="56dp"
@@ -105,7 +109,7 @@
             android:layout_height="wrap_content"
             android:text="Forgot password?"
             android:textSize="14sp"
-            android:textColor="@color/teal_700"
+            android:textColor="@color/black"
             android:gravity="end"
             android:layout_marginBottom="24dp" />
 
@@ -114,7 +118,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginBottom="24dp"
-            android:backgroundTint="@color/teal_700"
+            android:backgroundTint="@color/blue"
             android:text="Sign In"
             android:textColor="@android:color/white"
             android:textSize="16sp"
@@ -141,6 +145,28 @@
             android:paddingStart="16dp"
             android:paddingEnd="24dp"
             android:drawablePadding="8dp" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Don't have an account? "
+                android:textSize="14sp"
+                android:textColor="#7F8C8D" />
+
+            <TextView
+                android:id="@+id/tvSignUp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sign Up here"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/black" />
+        </LinearLayout>
 
     </LinearLayout>
 

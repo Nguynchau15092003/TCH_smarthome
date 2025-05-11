@@ -34,7 +34,17 @@
         android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize" />
+        android:layout_marginTop="?attr/actionBarSize" >
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigationView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="?android:attr/windowBackground"
+            android:fitsSystemWindows="true"
+            app:menu="@menu/bottom_nav_menu" />
+    </FrameLayout>
 
     <!-- Voice Command FAB -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -49,13 +59,5 @@
         app:fabSize="normal" />
 
     <!-- Bottom Navigation View -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigationView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:layout_gravity="bottom"
-        app:menu="@menu/bottom_nav_menu"
-        android:background="?android:attr/windowBackground" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
