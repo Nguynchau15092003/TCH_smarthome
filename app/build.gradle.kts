@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.smarthomevoice"
+    namespace = "com.tchassistant.smarthomevoice"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.smarthomevoice"
+        applicationId = "com.tchassistant.smarthomevoice"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
