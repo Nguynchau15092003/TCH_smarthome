@@ -36,11 +36,6 @@
             android:exported="true"
             android:theme="@style/Theme.Smarthomevoice" />
 
-        <!-- TakeNoteActivity: mở từ chức năng Take Note -->
-        <activity
-            android:name=".TakeNoteFragment"
-            android:exported="true" />
-
         <!-- LoginActivity: Login with google -->
         <activity
             android:name=".LoginActivity"

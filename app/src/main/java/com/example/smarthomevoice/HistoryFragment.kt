@@ -1,5 +1,7 @@
 package com.example.smarthomevoice
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,11 +10,13 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.smarthomevoice.databinding.FragmentHistoryBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.gson.GsonFactory
 import com.google.api.client.util.DateTime
@@ -34,6 +38,20 @@ class HistoryFragment : Fragment() {
 
     private var allItems = mutableListOf<HistoryItem>()
     private var filterType: String = "All" // Default filter
+
+    // Add ActivityResultLauncher for handling auth consent
+    private val authConsentLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // User granted permission, retry loading data
+            loadHistoryItems()
+        } else {
+            // User denied permission
+            showError("Permission denied. Some features may not be available.")
+            showLoading(false)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -130,8 +148,17 @@ class HistoryFragment : Fragment() {
                     Log.d(TAG, "Fetched ${events.size} calendar events")
                 } catch (e: Exception) {
                     Log.e(TAG, "Error fetching calendar events", e)
-                    withContext(Dispatchers.Main) {
-                        showError("Failed to load calendar events: ${e.message}")
+                    // Handle UserRecoverableAuthIOException specifically
+                    if (e is UserRecoverableAuthIOException) {
+                        withContext(Dispatchers.Main) {
+                            // Launch the consent activity
+                            authConsentLauncher.launch(e.intent)
+                            return@withContext // Exit the coroutine to prevent showing the loading indicator
+                        }
+                    } else {
+                        withContext(Dispatchers.Main) {
+                            showError("Failed to load calendar events: ${e.message}")
+                        }
                     }
                 }
 
@@ -165,8 +192,17 @@ class HistoryFragment : Fragment() {
                     Log.d(TAG, "Fetched ${tasks.size} tasks")
                 } catch (e: Exception) {
                     Log.e(TAG, "Error fetching tasks", e)
-                    withContext(Dispatchers.Main) {
-                        showError("Failed to load tasks: ${e.message}")
+                    // Handle UserRecoverableAuthIOException specifically
+                    if (e is UserRecoverableAuthIOException) {
+                        withContext(Dispatchers.Main) {
+                            // Launch the consent activity
+                            authConsentLauncher.launch(e.intent)
+                            return@withContext // Exit the coroutine to prevent showing the loading indicator
+                        }
+                    } else {
+                        withContext(Dispatchers.Main) {
+                            showError("Failed to load tasks: ${e.message}")
+                        }
                     }
                 }
 
@@ -250,6 +286,10 @@ class HistoryFragment : Fragment() {
                 Log.d(TAG, "Added ${events.size} events from calendar ${calendar.summary}")
             } catch (e: Exception) {
                 Log.e(TAG, "Error fetching events from calendar ${calendar.id}", e)
+                // Rethrow UserRecoverableAuthIOException to handle in the calling function
+                if (e is UserRecoverableAuthIOException) {
+                    throw e
+                }
                 // Continue with other calendars even if one fails
             }
         }
@@ -316,6 +356,10 @@ class HistoryFragment : Fragment() {
                 Log.d(TAG, "Added ${filteredTasks.size} tasks from task list ${taskList.title}")
             } catch (e: Exception) {
                 Log.e(TAG, "Error fetching tasks from list ${taskList.id}", e)
+                // Rethrow UserRecoverableAuthIOException to handle in the calling function
+                if (e is UserRecoverableAuthIOException) {
+                    throw e
+                }
                 // Continue with other task lists even if one fails
             }
         }

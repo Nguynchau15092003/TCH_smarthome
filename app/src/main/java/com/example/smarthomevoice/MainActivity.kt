@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.example.smarthomevoice.api.DialogflowService
 import com.example.smarthomevoice.databinding.ActivityMainBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -25,7 +24,6 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var dialogflowService: DialogflowService
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
     private val TAG = "MainActivity"
@@ -38,7 +36,7 @@ class MainActivity : AppCompatActivity() {
             val spokenText = result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)?.get(0)
             if (!spokenText.isNullOrEmpty()) {
                 Log.d(TAG, "Recognized speech: $spokenText")
-                processVoiceCommand(spokenText)
+                // Voice command processing removed
             }
         } else {
             Toast.makeText(this, "Speech recognition failed", Toast.LENGTH_SHORT).show()
@@ -51,9 +49,6 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // Initialize Dialogflow service
-        dialogflowService = DialogflowService(this)
 
         // Initialize Firebase Auth
         auth = FirebaseAuth.getInstance()
@@ -81,7 +76,7 @@ class MainActivity : AppCompatActivity() {
 
         // Gán topAppBar làm ActionBar
         setSupportActionBar(binding.topAppBar)
-        supportActionBar?.title = "TCH app"
+        supportActionBar?.title = "TCH Assistant"
 
         // Làm cho AppBar trong suốt và không bóng
         binding.topAppBar.setBackgroundColor(Color.TRANSPARENT)
@@ -153,34 +148,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun processVoiceCommand(command: String) {
-        Log.d(TAG, "Processing voice command: $command")
-        binding.fabVoice.isEnabled = false // Disable button while processing
-
-        lifecycleScope.launch {
-            try {
-                val response = dialogflowService.detectIntent(command)
-                val intentName = response.queryResult.intent.displayName
-                val parameters = response.queryResult.parameters.fieldsMap
-                val fulfillmentText = response.queryResult.fulfillmentText
-
-                Log.d(TAG, "Dialogflow Intent: $intentName, Parameters: $parameters")
-                Log.d(TAG, "Fulfillment text: $fulfillmentText")
-
-                when (intentName) {
-                    "devicecontrol" -> handleDeviceControlIntent(parameters)
-                    "roomselection" -> handleRoomSelectionIntent(parameters)
-                    else -> showToast("I didn't understand that command")
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Error processing voice command", e)
-                showToast("Error: ${e.message}")
-            } finally {
-                binding.fabVoice.isEnabled = true // Re-enable button after processing
-            }
-        }
-    }
-
     private fun handleDeviceControlIntent(parameters: Map<String, com.google.protobuf.Value>) {
         val device = parameters["devicename"]?.stringValue?.lowercase()
         val status = parameters["devicestatus"]?.stringValue?.lowercase()
@@ -228,18 +195,13 @@ class MainActivity : AppCompatActivity() {
     private fun signOut() {
         // Sign out from Firebase
         auth.signOut()
-        
+
         // Sign out from Google
         googleSignInClient.signOut().addOnCompleteListener(this) {
             // Navigate to LoginActivity
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        dialogflowService.shutdown()
     }
 
     companion object {
