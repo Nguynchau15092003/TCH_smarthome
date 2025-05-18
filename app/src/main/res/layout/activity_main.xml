@@ -24,7 +24,6 @@
             android:background="@android:color/transparent"
             android:title="TCH app"
             app:titleTextColor="@android:color/black"
-            app:navigationIcon="@drawable/ic_logout"
             app:elevation="0dp" />
 
     </com.google.android.material.appbar.AppBarLayout>
