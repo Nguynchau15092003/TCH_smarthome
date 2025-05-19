@@ -19,7 +19,20 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+import com.google.api.client.googleapis.json.GoogleJsonResponseException
+import com.google.api.client.http.javanet.NetHttpTransport
+import com.google.api.client.json.gson.GsonFactory
+import com.google.api.client.util.DateTime
+import com.google.api.services.calendar.CalendarScopes
+import com.google.api.services.calendar.model.Event
+import com.google.api.services.calendar.model.EventDateTime
+import com.google.api.services.tasks.TasksScopes
+import com.google.api.services.tasks.model.Task
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,6 +40,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
     private val TAG = "MainActivity"
+    private val voiceApiManager = VoiceApiManager()
+    private val dateTimeParser = DateTimeParser()
+    private lateinit var loadingOverlay: LoadingOverlay
 
     // Speech recognition launcher
     private val speechRecognizerLauncher = registerForActivityResult(
@@ -36,7 +52,9 @@ class MainActivity : AppCompatActivity() {
             val spokenText = result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)?.get(0)
             if (!spokenText.isNullOrEmpty()) {
                 Log.d(TAG, "Recognized speech: $spokenText")
-                // Voice command processing removed
+                lifecycleScope.launch {
+                    processVoiceCommand(spokenText)
+                }
             }
         } else {
             Toast.makeText(this, "Speech recognition failed", Toast.LENGTH_SHORT).show()
@@ -49,6 +67,9 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Initialize loading overlay
+        loadingOverlay = LoadingOverlay(this)
 
         // Initialize Firebase Auth
         auth = FirebaseAuth.getInstance()
@@ -148,23 +169,58 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleDeviceControlIntent(parameters: Map<String, com.google.protobuf.Value>) {
-        val device = parameters["devicename"]?.stringValue?.lowercase()
-        val status = parameters["devicestatus"]?.stringValue?.lowercase()
+    private suspend fun processVoiceCommand(text: String) {
+        loadingOverlay.show("Processing voice command...")
+        try {
+            showToast("Processing: $text")
+
+            val result = voiceApiManager.getPrediction(text)
+
+            if (result == null) {
+                showToast("Could not understand the command")
+                return
+            }
+
+            Log.d(TAG, "Prediction result: ${result.modelUsed} with predictions: ${result.wordPredictions}")
+
+            // Extract entities from word predictions
+            val entityMap = voiceApiManager.extractEntities(result.wordPredictions, result.modelUsed)
+            Log.d(TAG, "Extracted entities: $entityMap")
+
+            when (result.modelUsed) {
+                "DEVICE" -> handleDeviceControlIntent(entityMap)
+                "EVENT" -> handleEventCreationIntent(entityMap)
+                "TASK" -> handleTaskCreationIntent(entityMap)
+                else -> showToast("Unknown command type: ${result.modelUsed}")
+            }
+        } finally {
+            loadingOverlay.hide()
+        }
+    }
+
+    private fun handleDeviceControlIntent(entityMap: Map<String, String>) {
+        val device = entityMap["devicename"]?.lowercase()
+        val status = entityMap["devicestatus"]?.lowercase()
 
         Log.d(TAG, "Device control: Device=$device, Status=$status")
+
+        if (device == "room") {
+            // Special case for room selection
+            handleRoomSelectionIntent(mapOf("room" to (entityMap["devicename"] ?: "")))
+            return
+        }
 
         if (!device.isNullOrEmpty() && !status.isNullOrEmpty()) {
             // Find the current RemoteFragment and update device state
             val remoteFragment = supportFragmentManager.fragments.find { it is RemoteFragment } as? RemoteFragment
             remoteFragment?.let { fragment ->
                 when {
-                    (device == "door" || device == "curtain") && status == "open" ->
+                    (device == "door" || device == "curtain") && (status == "open" || status.contains("open")) ->
                         fragment.updateDeviceState(device, true)
-                    (device == "door" || device == "curtain") && status == "close" ->
+                    (device == "door" || device == "curtain") && (status == "close" || status.contains("close")) ->
                         fragment.updateDeviceState(device, false)
-                    status == "on" -> fragment.updateDeviceState(device, true)
-                    status == "off" -> fragment.updateDeviceState(device, false)
+                    status == "on" || status.contains("on") -> fragment.updateDeviceState(device, true)
+                    status == "off" || status.contains("off") -> fragment.updateDeviceState(device, false)
                     else -> showToast("Unknown status: $status for $device")
                 }
             } ?: showToast("Remote control not available")
@@ -173,8 +229,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleRoomSelectionIntent(parameters: Map<String, com.google.protobuf.Value>) {
-        val room = parameters["room"]?.stringValue
+    private fun handleRoomSelectionIntent(entityMap: Map<String, String>) {
+        val room = entityMap["room"]
 
         Log.d(TAG, "Room selection: Room=$room")
 
@@ -185,6 +241,225 @@ class MainActivity : AppCompatActivity() {
             } ?: showToast("Remote control not available")
         } else {
             showToast("Room not recognized")
+        }
+    }
+
+    private fun handleEventCreationIntent(entityMap: Map<String, String>) {
+        val time = entityMap["time"]
+        val endTime = entityMap["endtime"]
+        val location = entityMap["location"]
+        val date = entityMap["date"]
+
+        if (time != null && date != null) {
+            // Parse date and time
+            val parsedDate = dateTimeParser.parseDate(date)
+            val parsedStartTime = time.let { dateTimeParser.parseTime(it) }
+
+            if (parsedDate != null && parsedStartTime != null) {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        // Get the user account
+                        val account = GoogleSignIn.getLastSignedInAccount(this@MainActivity)
+                        if (account == null) {
+                            withContext(Dispatchers.Main) {
+                                showToast("Please sign in with your Google account")
+                            }
+                            return@launch
+                        }
+
+                        // Create credential for Calendar API
+                        val credential = GoogleAccountCredential.usingOAuth2(
+                            this@MainActivity, listOf(CalendarScopes.CALENDAR)
+                        ).apply {
+                            selectedAccount = account.account
+                        }
+
+                        // Build Calendar service
+                        val calendarService = com.google.api.services.calendar.Calendar.Builder(
+                            NetHttpTransport(),
+                            GsonFactory.getDefaultInstance(),
+                            credential
+                        ).setApplicationName("SmartHomeVoice").build()
+
+                        // Create start time
+                        val startTime = Calendar.getInstance().apply {
+                            set(Calendar.YEAR, parsedDate.get(Calendar.YEAR))
+                            set(Calendar.MONTH, parsedDate.get(Calendar.MONTH))
+                            set(Calendar.DAY_OF_MONTH, parsedDate.get(Calendar.DAY_OF_MONTH))
+                            set(Calendar.HOUR_OF_DAY, parsedStartTime.first)
+                            set(Calendar.MINUTE, parsedStartTime.second)
+                        }
+
+                        // Create end time
+                        val endTime = if (endTime != null) {
+                            // Check if endTime is a duration (e.g., "1 hour")
+                            if (endTime.contains("hour", ignoreCase = true) || 
+                                endTime.contains("min", ignoreCase = true)) {
+                                val duration = endTime.split(" ")[0].toIntOrNull() ?: 1
+                                val isHours = endTime.contains("hour", ignoreCase = true)
+                                
+                                startTime.clone() as Calendar
+                                if (isHours) {
+                                    startTime.add(Calendar.HOUR, duration)
+                                } else {
+                                    startTime.add(Calendar.MINUTE, duration)
+                                }
+                                startTime
+                            } else {
+                                // Parse as a specific time
+                                val parsedEndTime = dateTimeParser.parseTime(endTime)
+                                if (parsedEndTime != null) {
+                                    Calendar.getInstance().apply {
+                                        set(Calendar.YEAR, parsedDate.get(Calendar.YEAR))
+                                        set(Calendar.MONTH, parsedDate.get(Calendar.MONTH))
+                                        set(Calendar.DAY_OF_MONTH, parsedDate.get(Calendar.DAY_OF_MONTH))
+                                        set(Calendar.HOUR_OF_DAY, parsedEndTime.first)
+                                        set(Calendar.MINUTE, parsedEndTime.second)
+                                    }
+                                } else {
+                                    // Default to 1 hour if parsing fails
+                                    startTime.clone() as Calendar
+                                    startTime.add(Calendar.HOUR, 1)
+                                    startTime
+                                }
+                            }
+                        } else {
+                            // Default to 1 hour if no end time specified
+                            startTime.clone() as Calendar
+                            startTime.add(Calendar.HOUR, 1)
+                            startTime
+                        }
+
+                        val start = EventDateTime()
+                            .setDateTime(DateTime(startTime.time))
+                            .setTimeZone(TimeZone.getDefault().id)
+
+                        val end = EventDateTime()
+                            .setDateTime(DateTime(endTime.time))
+                            .setTimeZone(TimeZone.getDefault().id)
+
+                        // Create the event
+                        val event = Event()
+                            .setSummary(location)
+                            .setStart(start)
+                            .setEnd(end)
+
+                        val createdEvent = calendarService.events()
+                            .insert("primary", event)
+                            .execute()
+
+                        withContext(Dispatchers.Main) {
+                            showToast("Event created successfully!")
+                        }
+
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error creating event", e)
+                        withContext(Dispatchers.Main) {
+                            when (e) {
+                                is GoogleJsonResponseException -> {
+                                    when (e.statusCode) {
+                                        403 -> showToast("Calendar API is not enabled. Please enable it in Google Cloud Console.")
+                                        401 -> showToast("Authentication failed. Please sign in again.")
+                                        else -> showToast("Failed to create event: ${e.message}")
+                                    }
+                                }
+                                is com.google.android.gms.auth.UserRecoverableAuthException -> {
+                                    e.intent?.let { intent ->
+                                        startActivityForResult(intent, REQUEST_AUTHORIZATION)
+                                    }
+                                }
+                                else -> showToast("Failed to create event: ${e.message}")
+                            }
+                        }
+                    }
+                }
+            } else {
+                showToast("Could not parse date or time")
+            }
+        } else {
+            showToast("Missing required event information")
+        }
+    }
+
+    private fun handleTaskCreationIntent(entityMap: Map<String, String>) {
+        val taskName = entityMap["taskname"]
+        val date = entityMap["date"]
+
+        if (taskName != null && date != null) {
+            // Parse date
+            val parsedDate = dateTimeParser.parseDate(date)
+
+            if (parsedDate != null) {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    try {
+                        val account = GoogleSignIn.getLastSignedInAccount(this@MainActivity)
+                        if (account == null) {
+                            withContext(Dispatchers.Main) {
+                                showToast("Please sign in with your Google account")
+                            }
+                            return@launch
+                        }
+
+                        val credential = GoogleAccountCredential.usingOAuth2(
+                            this@MainActivity, listOf(TasksScopes.TASKS)
+                        ).apply {
+                            selectedAccount = account.account
+                        }
+
+                        val tasksService = com.google.api.services.tasks.Tasks.Builder(
+                            NetHttpTransport(),
+                            GsonFactory.getDefaultInstance(),
+                            credential
+                        ).setApplicationName("SmartHomeVoice").build()
+
+                        // Get default task list
+                        val taskLists = tasksService.tasklists().list().execute()
+                        val defaultTaskList = taskLists.items.find { it.title == "@default" }
+                            ?: taskLists.items.firstOrNull()
+                            ?: throw Exception("No task lists found")
+
+                        // Create task
+                        val dueDate = DateTime(parsedDate.time).toStringRfc3339()
+                        val task = Task()
+                            .setTitle(taskName)
+                            .setNotes("Created via voice command")
+                            .setDue(dueDate)
+                            .setStatus("needsAction")
+
+                        val createdTask = tasksService.tasks()
+                            .insert(defaultTaskList.id, task)
+                            .execute()
+
+                        withContext(Dispatchers.Main) {
+                            showToast("Task created successfully!")
+                        }
+
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error creating task", e)
+                        withContext(Dispatchers.Main) {
+                            when (e) {
+                                is GoogleJsonResponseException -> {
+                                    when (e.statusCode) {
+                                        403 -> showToast("Tasks API is not enabled. Please enable it in Google Cloud Console.")
+                                        401 -> showToast("Authentication failed. Please sign in again.")
+                                        else -> showToast("Failed to create task: ${e.message}")
+                                    }
+                                }
+                                is com.google.android.gms.auth.UserRecoverableAuthException -> {
+                                    e.intent?.let { intent ->
+                                        startActivityForResult(intent, REQUEST_AUTHORIZATION)
+                                    }
+                                }
+                                else -> showToast("Failed to create task: ${e.message}")
+                            }
+                        }
+                    }
+                }
+            } else {
+                showToast("Could not parse date")
+            }
+        } else {
+            showToast("Missing required task information")
         }
     }
 
@@ -206,5 +481,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val PERMISSION_REQUEST_RECORD_AUDIO = 1001
+        private const val REQUEST_AUTHORIZATION = 1002
     }
 }

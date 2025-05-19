@@ -35,6 +35,7 @@ class HistoryFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var adapter: HistoryAdapter
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
+    private lateinit var loadingOverlay: LoadingOverlay
 
     private var allItems = mutableListOf<HistoryItem>()
     private var filterType: String = "All" // Default filter
@@ -49,7 +50,7 @@ class HistoryFragment : Fragment() {
         } else {
             // User denied permission
             showError("Permission denied. Some features may not be available.")
-            showLoading(false)
+            hideLoading()
         }
     }
 
@@ -63,6 +64,9 @@ class HistoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // Initialize loading overlay
+        loadingOverlay = LoadingOverlay(requireActivity())
 
         setupRecyclerView()
         setupFilterSpinner()
@@ -114,8 +118,20 @@ class HistoryFragment : Fragment() {
         binding.tvItemCount.text = formattedCount
     }
 
+    private fun showLoading(message: String = "Loading history...") {
+        loadingOverlay.show(message)
+        binding.rvHistory.visibility = View.GONE
+        binding.layoutControls.visibility = View.GONE
+    }
+
+    private fun hideLoading() {
+        loadingOverlay.hide()
+        binding.rvHistory.visibility = View.VISIBLE
+        binding.layoutControls.visibility = View.VISIBLE
+    }
+
     private fun loadHistoryItems() {
-        showLoading(true)
+        showLoading()
         coroutineScope.launch {
             try {
                 allItems.clear()
@@ -230,16 +246,10 @@ class HistoryFragment : Fragment() {
                 }
             } finally {
                 withContext(Dispatchers.Main) {
-                    showLoading(false)
+                    hideLoading()
                 }
             }
         }
-    }
-
-    private fun showLoading(isLoading: Boolean) {
-        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        binding.rvHistory.visibility = if (isLoading) View.GONE else View.VISIBLE
-        binding.layoutControls.visibility = if (isLoading) View.GONE else View.VISIBLE
     }
 
     private fun showError(message: String) {
