@@ -6,5 +6,5 @@
         android:state_checked="true" />
     <!-- Track khi Switch OFF -->
     <item
-        android:drawable="@drawable/switch_track_off" />
+        android:drawable="@drawable/switch_track_off_shape" />
 </selector>

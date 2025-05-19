@@ -1,101 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
+    android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-    <!-- Thanh App Bar (có thể dùng Toolbar hoặc LinearLayout đơn giản) -->
-    <LinearLayout
+    <!-- AppBarLayout chứa MaterialToolbar -->
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="8dp">
+        android:background="@android:color/transparent"
+        android:fitsSystemWindows="true"
+        app:elevation="0dp">
 
-        <!-- TextView Title, dùng string resource thay vì hardcode -->
-        <TextView
-            android:id="@+id/tvTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/app_name"
-            android:textStyle="bold"
-            android:textSize="20sp" />
+        <!-- MaterialToolbar làm top app bar -->
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            android:title="TCH app"
+            app:titleTextColor="@android:color/black"
+            app:elevation="0dp" />
 
-        <!-- Avatar góc phải, thêm contentDescription để hỗ trợ Accessibility -->
-        <ImageView
-            android:id="@+id/imgAvatar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="8dp"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/avatar_content_desc"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_launcher_foreground" />
-    </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- HorizontalScrollView chỉ có 1 con trực tiếp -->
-    <HorizontalScrollView
+    <!-- Fragment Container -->
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fillViewport="true"
-        android:scrollbars="none">
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize" >
 
-        <!-- TabLayout làm con duy nhất bên trong HorizontalScrollView -->
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayout"
-            android:layout_width="wrap_content"
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigationView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabGravity="center"
-            app:tabIndicatorColor="@android:color/black"
-            app:tabMode="scrollable"
-            app:tabSelectedTextColor="@android:color/black"
-            app:tabTextColor="@android:color/darker_gray">
+            android:layout_gravity="bottom"
+            android:background="?android:attr/windowBackground"
+            android:fitsSystemWindows="true"
+            app:menu="@menu/bottom_nav_menu" />
+    </FrameLayout>
 
-            <!-- BỎ ID Ở TABITEM: KHÔNG DÙNG android:id -->
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tab_all_devices" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tab_living_room" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tab_kitchen" />
-
-        </com.google.android.material.tabs.TabLayout>
-
-    </HorizontalScrollView>
-
-    <!-- RecyclerView hiển thị danh sách thiết bị -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewDevices"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:scrollbars="vertical"
-        android:clipToPadding="false"
-        android:padding="4dp" />
-
-    <!-- FloatingActionButton (mic) -->
+    <!-- Voice Command FAB -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabVoice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_mic"
-        app:backgroundTint="@color/purple_500"
-        android:contentDescription="@string/fab_voice_desc" />>
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="88dp"
+        android:contentDescription="@string/voice_command_desc"
+        android:src="@drawable/ic_voice"
+        app:fabSize="normal" />
 
-</LinearLayout>
+    <!-- Bottom Navigation View -->
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

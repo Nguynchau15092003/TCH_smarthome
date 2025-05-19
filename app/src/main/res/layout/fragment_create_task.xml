@@ -1,0 +1,84 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:orientation="vertical">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardTask"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="16dp"
+        android:layout_marginBottom="16dp"
+        android:elevation="6dp"
+        app:cardElevation="6dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <EditText
+                android:id="@+id/etTaskTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:hint="Task Title"
+                android:inputType="text"
+                android:background="@drawable/rounded_edittext"
+                android:padding="12dp"
+                android:textColor="#333333"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/etTaskNotes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:hint="Task Notes"
+                android:inputType="text"
+                android:background="@drawable/rounded_edittext"
+                android:padding="12dp"
+                android:layout_marginTop="12dp"
+                android:textColor="#333333"
+                android:textSize="16sp" />
+
+            <!-- EditText chọn ngày -->
+            <EditText
+                android:id="@+id/etTaskDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Select Date"
+                android:focusable="false"
+                android:inputType="none"
+                android:background="@drawable/rounded_edittext"
+                android:padding="12dp"
+                android:textSize="16sp"
+                android:layout_marginTop="12dp"
+                android:textColor="#333333" />
+
+            <CheckBox
+                android:id="@+id/cbTaskCompleted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mark as Completed"
+                android:textSize="14sp"
+                android:layout_marginTop="12dp"
+                android:textColor="#333333" />
+
+            <Button
+                android:id="@+id/btnSaveTask"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save Task"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#FF03DAC5"
+                android:textColor="@android:color/white"
+                android:elevation="4dp"
+                android:layout_marginBottom="16dp" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

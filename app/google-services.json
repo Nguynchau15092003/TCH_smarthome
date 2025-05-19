@@ -1,0 +1,137 @@
+{
+  "project_info": {
+    "project_number": "190947507949",
+    "project_id": "iot-voice-control-smart-home",
+    "storage_bucket": "iot-voice-control-smart-home.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:190947507949:android:41eb1361ed87c4720916e4",
+        "android_client_info": {
+          "package_name": "com.example.smarthomevoice"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "190947507949-0cv43msf660qf5v6uh6o7a5ll36cej11.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.smarthomevoice",
+            "certificate_hash": "8d088df4095e4439f5648c387d27849a3972793d"
+          }
+        },
+        {
+          "client_id": "190947507949-b01dnen7qq8t51sk9q0jlhmrd8co6vs5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.smarthomevoice",
+            "certificate_hash": "11503ef4d6f356a1bd56c61dc373d91267ccf7ef"
+          }
+        },
+        {
+          "client_id": "190947507949-vnc1qbv35ecirpaj7jrnnoi1ljgv313h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.smarthomevoice",
+            "certificate_hash": "405a58dd0981b4aafe9ab8f7ac9ea8b0d1dee498"
+          }
+        },
+        {
+          "client_id": "190947507949-hb00urfhr7v3qt84v2fl7p8lk0o9boqi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBI36zHkm0d10JqG-9SUSRqkWCB3Hmxo_k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "190947507949-hb00urfhr7v3qt84v2fl7p8lk0o9boqi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:190947507949:android:7ef18c8d6f22e0e80916e4",
+        "android_client_info": {
+          "package_name": "com.giahung.testggwithcalendar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "190947507949-04d36lies12c8p39n4540qotljn4h8to.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.giahung.testggwithcalendar",
+            "certificate_hash": "405a58dd0981b4aafe9ab8f7ac9ea8b0d1dee498"
+          }
+        },
+        {
+          "client_id": "190947507949-hb00urfhr7v3qt84v2fl7p8lk0o9boqi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBI36zHkm0d10JqG-9SUSRqkWCB3Hmxo_k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "190947507949-hb00urfhr7v3qt84v2fl7p8lk0o9boqi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:190947507949:android:255bbe70f3ce28d00916e4",
+        "android_client_info": {
+          "package_name": "com.tchassistant.smarthomevoice"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "190947507949-ea93acr8k8km1c496l0r3r3k53n6hsg4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tchassistant.smarthomevoice",
+            "certificate_hash": "405a58dd0981b4aafe9ab8f7ac9ea8b0d1dee498"
+          }
+        },
+        {
+          "client_id": "190947507949-hb00urfhr7v3qt84v2fl7p8lk0o9boqi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBI36zHkm0d10JqG-9SUSRqkWCB3Hmxo_k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "190947507949-hb00urfhr7v3qt84v2fl7p8lk0o9boqi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
