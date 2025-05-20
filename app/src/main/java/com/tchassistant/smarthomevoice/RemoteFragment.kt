@@ -22,7 +22,7 @@ class RemoteFragment : Fragment() {
         Device("Fan", R.drawable.ic_fan, true, room = "Living Room"),
         Device("Light", R.drawable.ic_light, false, room = "Kitchen"),
         Device("Curtain", R.drawable.ic_curtain, true, room = "Living Room"),
-        Device("Night Light", R.drawable.ic_night_light, false, room = "Bedroom"),
+        Device("Lamp", R.drawable.ic_night_light, false, room = "Bedroom"),
         Device("Door", R.drawable.ic_door, false, room = "Bedroom")
     )
 
