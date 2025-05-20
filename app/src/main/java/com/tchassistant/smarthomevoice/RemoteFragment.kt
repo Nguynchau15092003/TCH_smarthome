@@ -86,9 +86,13 @@ class RemoteFragment : Fragment() {
             // Update adapter
             deviceAdapter.notifyItemChanged(deviceIndex)
 
-            // Show feedback
-            val statusText = if (newState) "turned on" else "turned off"
-            Toast.makeText(requireContext(), "${allDevices[deviceIndex].name} $statusText", Toast.LENGTH_SHORT).show()
+            val device = allDevices[deviceIndex]
+            val statusText = when (device.name.lowercase()) {
+                "door", "curtain" -> if (newState) "opened" else "closed"
+                else -> if (newState) "turned on" else "turned off"
+            }
+            Toast.makeText(requireContext(), "${device.name} $statusText", Toast.LENGTH_SHORT).show()
+
         } else {
             Toast.makeText(requireContext(), "Device '$deviceName' not found", Toast.LENGTH_SHORT).show()
         }
